@@ -217,6 +217,10 @@ def dispaly_lable_name():
 	Label_num = 0
 
 	for labe_index in range(0, len(labe_name_list)):
+		text = StringVar()
+		text.set("INIT")
+		labe_value_list.append(text)
+
 		if(0 != (int(labe_name_list[labe_index][3], 16)&0x03)):
 			Label(root_window, text=("%-18s :" % labe_name_list[labe_index][4]), font=ft_1).place(x=labe_x, y=labe_y)
 		else:
@@ -244,8 +248,9 @@ def display_info_data():
 	Label_num = 0
 
 	for labe_index in range(0, len(labe_name_list)):
+		#print("%s" % labe_value_list[labe_index].get())
 		if(0 != (int(labe_name_list[labe_index][3], 16)&0x03)):
-			Label(root_window, text=labe_value_list[labe_index], font=ft_1).place(x=labe_x, y=labe_y)
+			Label(root_window, textvariable=labe_value_list[labe_index], font=ft_1).place(x=labe_x, y=labe_y)
 		else:
 			continue
 
@@ -301,15 +306,17 @@ def read_special_data(labe_index):
 		ver3 = ec_ram_read(index+2)
 		ver4 = ec_ram_read(index+3)
 
-		labe_value_list.append("%02X-%02X-%02X-%02X" % (ver1, ver2, ver3, ver4))
+		labe_value_list[labe_index].set("%02X-%02X-%02X-%02X" % (ver1, ver2, ver3, ver4))
 	else:
-		labe_value_list.append('NA')
+		labe_value_list[labe_index].set("NA")
 
 def read_info_data():
-	labe_value_list.clear()
 	info_value = 0
 
 	for labe_index in range(0, len(labe_name_list)):
+		#print("%d = %s" % (labe_index, labe_value_list[labe_index].get()))
+		#print("%d %X" % (labe_index, int(labe_name_list[labe_index][3], 16)))
+
 		if(0x0F == int(labe_name_list[labe_index][3], 16)):
 			read_special_data(labe_index)
 			continue
@@ -319,26 +326,28 @@ def read_info_data():
 			info_value = ec_ram_read(int(labe_name_list[labe_index][1], 16))
 
 		elif(0x08 == int(labe_name_list[labe_index][3], 16)&0x0C): # Word data
-			print("0x%04X-0x%04X" % (int(labe_name_list[labe_index][1], 16), int(labe_name_list[labe_index][2], 16)))
+			#print("0x%04X-0x%04X" % (int(labe_name_list[labe_index][1], 16), int(labe_name_list[labe_index][2], 16)))
 			info_value = ec_ram_read(int(labe_name_list[labe_index][1], 16)) + \
 							ec_ram_read(int(labe_name_list[labe_index][2], 16))*0x100
-			print("%d" % info_value)
+			#print("%d" % info_value)
+		elif(0x0C == int(labe_name_list[labe_index][3], 16)&0x0C): #Special
+			continue
 		else:
 			info_value = 0
 
-
 		if(0x01 == int(labe_name_list[labe_index][3], 16)&0x03): # Decimal data
-			#print(hex(info_value))
-			labe_value_list.append(("%d" % info_value))
+			labe_value_list[labe_index].set(("%d" % info_value))
+			#print(labe_value_list[labe_index].get())
 		elif(0x02 == int(labe_name_list[labe_index][3], 16)&0x03): # Hexadecimal data
-			#print(hex(info_value))
-			labe_value_list.append(("0x%04X" % info_value))
+			labe_value_list[labe_index].set(("0x%04X" % info_value))
+			#print(labe_value_list[labe_index].get())
+		elif(0x03 == int(labe_name_list[labe_index][3], 16)&0x03): # Special data
+			continue
 		else:
-			labe_value_list.append("NA")
+			labe_value_list[labe_index].set("NA")
 
 def refresh_data():
 	read_info_data()
-	display_info_data()
 	root_window.after(500, refresh_data)	# ms
 
 
