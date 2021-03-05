@@ -5,6 +5,7 @@
 #import tkinter as tk
 from tkinter import *
 import tkinter.font as tkFont
+import tkinter.filedialog
 import pywinio
 import sys
 import os
@@ -98,87 +99,7 @@ def ec_ram_write(d_index, data):
     winio.set_port_byte(EC_DATA_PORT, data);
 #===============================================================================
 
-labe_name_list = [
-['EC_Version', '        0xC410', '    0x0000', '    0x0F', '    EC_Version'],
-['BAT_mAormW', '        0xC900', '    0xC901', '    0x0F', '    BAT_Data_Unit'],
-['BAT_AC_State', '      0xC460', '    0xC460', '    0x0F', '    BAT_AC_State'],
-['BAT_FCCFlag', '       0xC914', '    0xC915', '    0x0F', '    BAT_FC_Status'],
-['BAT_RealRSOC', '      0xC000', '    0xC000', '    0x0F', '    BAT_RealRSOC'],
-['BAT_ManuName', '      0xC930', '    0xC000', '    0x0F', '    BAT_ManuName'],
-['BAT_DeviceName', '    0xC940', '    0xC000', '    0x0F', '    BAT_DevName'],
-['BAT_DevChemistry', '  0xC920', '    0xC000', '    0x0F', '    BAT_DevChem'],
-['BAT_ManuDate', '      0xC91C', '    0xC91D', '    0x0F', '    BAT_ManuDate'],
-['BAT_SerialNum', '     0xC91E', '    0xC91F', '    0x0F', '    BAT_S-Num'],
-['Data_01', '    0xC906', '    0xC907', '    0x0D', '    BAT_Current'],
-['Data_02', '    0xC904', '    0xC905', '    0x0D', '    BAT_Voltage'],
-['Data_03', '    0xC90C', '    0xC90D', '    0x0D', '    BAT_RMC'],
-['Data_04', '    0xC90E', '    0xC90F', '    0x0D', '    BAT_FCC'],
-['Data_05', '    0xC908', '    0xC909', '    0x0D', '    BAT_RSOC'],
-['Data_06', '    0xC90A', '    0xC90B', '    0x0D', '    BAT_ASOC'],
-['Data_07', '    0xC91A', '    0xC91B', '    0x0D', '    BAT_DV'],
-['Data_08', '    0xC918', '    0xC919', '    0x0D', '    BAT_DC'],
-['Data_09', '    0xC902', '    0xC903', '    0x0D', '    BAT_Temp'],
-['Data_10', '    0xC916', '    0xC917', '    0x0D', '    BAT_CycleCount'],
-['Data_11', '    0xC910', '    0xC911', '    0x0D', '    BAT_CC'],
-['Data_12', '    0xC912', '    0xC913', '    0x0D', '    BAT_CV'],
-['Data_13', '    0xC915', '    0xC000', '    0x0D', '    BAT_Status_H'],
-['Data_14', '    0xC914', '    0xC000', '    0x0D', '    BAT_Status_L'],
-['Data_15', '    0xC982', '    0xC983', '    0x0D', '    CHARGE_Voltage'],
-['Data_16', '    0xC984', '    0xC985', '    0x0D', '    CHARGE_Current'],
-['Data_17', '    0xC980', '    0xC981', '    0x0D', '    INPUT_Current'],
-['Data_20', '    0xC8B6', '    0xC8B7', '    0x0F', '    CHARGE_OP0'],
-['Data_21', '    0xC8B8', '    0xC8B9', '    0x0F', '    CHARGE_OP1'],
-['Data_22', '    0xC8BA', '    0xC8BB', '    0x0F', '    CHARGE_OP2'],
-['Data_23', '    0xC8BC', '    0xC8BD', '    0x0F', '    CHARGE_OP3'],
-['Data_24', '    0xC8B8', '    0xC8B9', '    0x0F', '    CHARGE_OP4'],
-['Data_25', '    0xC8BA', '    0xC8BB', '    0x0F', '    CHARGE_OP5'],
-['Data_26', '    0xC8BC', '    0xC8BD', '    0x0F', '    CHARGE_OP6'],
-['Data_27', '    0xC8BE', '    0xC8BF', '    0x0F', '    PROHOT_OP0'],
-['Data_28', '    0xC8C0', '    0xC8C1', '    0x0F', '    PROHOT_OP1'],
-['Data_29', '    0xC8C2', '    0xC8C3', '    0x0F', '    PROHOT_Status'],
-['Data_30', '    0xC8CA', '    0xC8CB', '    0x0F', '    ChargerStatus'],
-['Data_31', '    0xC8B6', '    0xC8B7', '    0x0F', '    Hex_Dat_01'],
-['Data_32', '    0xC8B8', '    0xC8B9', '    0x0F', '    Hex_Dat_02'],
-['Data_33', '    0xC8BA', '    0xC8BB', '    0x0F', '    Hex_Dat_03'],
-['Data_34', '    0xC8BC', '    0xC8BD', '    0x0F', '    Hex_Dat_04'],
-['Data_35', '    0xC8B8', '    0xC8B9', '    0x0F', '    Hex_Dat_05'],
-['Data_36', '    0xC8BA', '    0xC8BB', '    0x0F', '    Hex_Dat_06'],
-['Data_37', '    0xC8BC', '    0xC8BD', '    0x0F', '    Hex_Dat_07'],
-['Data_38', '    0xC8BE', '    0xC8BF', '    0x0F', '    Hex_Dat_08'],
-['Data_39', '    0xC8C0', '    0xC8C1', '    0x0F', '    Hex_Dat_09'],
-['Data_40', '    0xC417', '    0x0000', '    0x0F', '    CHG_Temp_NTC'],
-['Data_41', '    0xC418', '    0x0000', '    0x0F', '    CPU_NTC'],
-['Data_42', '    0xC419', '    0x0000', '    0x0F', '    SEN1'],
-['Data_43', '    0xC41A', '    0x0000', '    0x0F', '    Memory_NTC'],
-['Data_44', '    0xC41B', '    0x0000', '    0x0F', '    CPU_DTS'],
-['Data_45', '    0xC41C', '    0x0000', '    0x0F', '    NTC_DDR'],
-['Data_46', '    0xC41D', '    0x0000', '    0x0F', '    NTC_GPU'],
-['Data_47', '    0xC41E', '    0x0000', '    0x0F', '    V5P0A_NTC'],
-['Data_48', '    0xC41F', '    0x0000', '    0x0F', '    NTC_CPU'],
-['Data_49', '    0xC41F', '    0x0000', '    0x0F', '    NTC_CPU_Back'],
-['Data_50', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_01'],
-['Data_51', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_02'],
-['Data_52', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_03'],
-['Data_53', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_04'],
-['Data_54', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_05'],
-['Data_55', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_06'],
-['Data_56', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_07'],
-['Data_57', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_08'],
-['Data_58', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_09'],
-['Data_59', '    0xC41F', '    0x0000', '    0x0F', '    Dec_Dat_10'],
-['OS_AC             ', '    0x0000', '    0x0000', '    0x00', '    OS_AC_Status'],
-['OS_BAT            ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_Status'],
-['OS_BAT_Charge     ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_Charge'],
-['OS_BAT_Discharge  ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_Discha'],
-['OS_BAT_Remtime    ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_Remtime'],
-['OS_BAT_FCC        ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_FCC'],
-['OS_BAT_RMC        ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_RMC'],
-['OS_BAT_Current    ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_Current'],
-['OS_BAT_RSOC       ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_RSOC'],
-['OS_BAT_Alert1_Low ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_Low'],
-['OS_BAT_Alert1_War ', '    0x0000', '    0x0000', '    0x00', '    OS_BAT_War'],
-]
-
+labe_name_list = []
 labe_value_list = []
 
 #===============================================================================
@@ -217,6 +138,7 @@ def dispaly_lable_name():
 	Label_num = 0
 
 	for labe_index in range(0, len(labe_name_list)):
+		#print("%d %s" % (labe_index, labe_name_list[labe_index][4]))
 		text = StringVar()
 		text.set("INIT")
 		labe_value_list.append(text)
@@ -267,36 +189,6 @@ def display_info_data():
 		elif():
 			break;
 
-def parsing_cfg_file(data_line):
-	global EC_ADDR_PORT
-	global EC_DATA_PORT
-
-	if('$1' == data_line[0:2]):
-		#print (data_line, end="")
-		#print(data_line.split("#")[1].split("#")[0])
-		str1 = data_line.split("#")[1].split("#")[0]
-		#print(str1.split(","), end='')
-		labe_name_list.append(str1.split(","))
-	elif('$0_0' == data_line[0:4]):
-		print("%X" % int(data_line.split(",")[1], 16))
-	elif('$0_1' == data_line[0:4]):
-		EC_ADDR_PORT = int(data_line.split(",")[1], 16)
-		EC_DATA_PORT = int(data_line.split(",")[1], 16) + 1
-		print("%X-%X" % (EC_ADDR_PORT, EC_DATA_PORT))
-	elif('$0_2' == data_line[0:4]):
-		refresh_time_ms = int(data_line.split(",")[1])
-		print("%d" % refresh_time_ms)
-
-def read_cfg_file():
-	try:
-		with open('./batteryview.cfg', 'r+', encoding='utf-8') as cfg_file:
-			line = cfg_file.readline()
-			labe_name_list.clear()
-			while line:
-				parsing_cfg_file(line)
-				line = cfg_file.readline()
-	except IOError:
-		print("配置文件不存在,载入默认配置...")
 
 def read_special_data(labe_index):
 	if('EC_Version' == labe_name_list[labe_index][0]):
@@ -307,17 +199,38 @@ def read_special_data(labe_index):
 		ver4 = ec_ram_read(index+3)
 
 		labe_value_list[labe_index].set("%02X-%02X-%02X-%02X" % (ver1, ver2, ver3, ver4))
+	elif('BAT_Current' == labe_name_list[labe_index][0]):
+		bat_current = ec_ram_read(int(labe_name_list[labe_index][1], 16)) + \
+						ec_ram_read(int(labe_name_list[labe_index][2], 16))*0x100
+
+		if(bat_current>=0x8000):
+			bat_current = ~bat_current
+			labe_value_list[labe_index].set("-%-5d" % bat_current)
+		else:
+			labe_value_list[labe_index].set("%5d" % bat_current)
+	elif('BAT_Temp' == labe_name_list[labe_index][0]):
+		bat_temp = ec_ram_read(int(labe_name_list[labe_index][1], 16)) + \
+						ec_ram_read(int(labe_name_list[labe_index][2], 16))*0x100
+
+		bat_temp = (bat_temp*0.1)-273.15
+		labe_value_list[labe_index].set("%5.1f" % bat_temp)
+	elif('BAT_ManuDate' == labe_name_list[labe_index][0]):
+		bat_date = ec_ram_read(int(labe_name_list[labe_index][1], 16)) + \
+						ec_ram_read(int(labe_name_list[labe_index][2], 16))*0x100
+
+		labe_value_list[labe_index].set("%d-%d-%d" % (((bat_date>>9)&0x7F)+1980, (bat_date>>5)&0x0F, bat_date&0x1F))
 	else:
 		labe_value_list[labe_index].set("NA")
+
 
 def read_info_data():
 	info_value = 0
 
 	for labe_index in range(0, len(labe_name_list)):
 		#print("%d = %s" % (labe_index, labe_value_list[labe_index].get()))
-		#print("%d %X" % (labe_index, int(labe_name_list[labe_index][3], 16)))
+		#print("%d %s" % (labe_index, labe_name_list[labe_index][4]))
 
-		if(0x0F == int(labe_name_list[labe_index][3], 16)):
+		if(0x0F == int(labe_name_list[labe_index][3], 16)): # Special data
 			read_special_data(labe_index)
 			continue
 
@@ -346,16 +259,62 @@ def read_info_data():
 		else:
 			labe_value_list[labe_index].set("NA")
 
+cfg_file_name = ''
+
+def parsing_cfg_file(data_line):
+	global EC_ADDR_PORT
+	global EC_DATA_PORT
+
+	if('$1' == data_line[0:2]):
+		#print (data_line, end="")
+		#print(data_line.split("#")[1].split("#")[0])
+		str1 = data_line.split("#")[1].split("#")[0]
+		#print(str1.split(","), end='')
+		labe_name_list.append(str1.split(","))
+	elif('$0_0' == data_line[0:4]):
+		print("%X" % int(data_line.split(",")[1], 16))
+	elif('$0_1' == data_line[0:4]):
+		EC_ADDR_PORT = int(data_line.split(",")[1], 16)
+		EC_DATA_PORT = int(data_line.split(",")[1], 16) + 1
+		print("%X-%X" % (EC_ADDR_PORT, EC_DATA_PORT))
+	elif('$0_2' == data_line[0:4]):
+		refresh_time_ms = int(data_line.split(",")[1])
+		print("%d" % refresh_time_ms)
+
+def open_cfg_file():
+	global cfg_file_name
+
+	cfg_file_name = tkinter.filedialog.askopenfilename()
+	if cfg_file_name != '':
+		print("file name:" + cfg_file_name)
+		try:
+			with open(cfg_file_name, 'r+', encoding='utf-8') as cfg_file:
+				labe_name_list.clear()
+				labe_value_list.clear()
+
+				line = cfg_file.readline()
+				while line:
+					parsing_cfg_file(line)
+					line = cfg_file.readline()
+
+			ToolInit()
+			dispaly_lable_name()
+			display_info_data()
+
+		except IOError:
+			print("无法打开文件")
+			cfg_file_name = ''
+	else:
+		print("file name:" + "NA")
+		cfg_file_name = ''
+
+
 def refresh_data():
-	read_info_data()
+	if cfg_file_name != '':
+		read_info_data()
 	root_window.after(500, refresh_data)	# ms
 
 
-read_cfg_file()
-dispaly_lable_name()
-ToolInit()
-read_info_data()
-display_info_data()
-
+btn = Button(root_window, text="选择配置文件", font=('Courier', 13), bd=5, command=open_cfg_file).place(x=1050, y=50)
 root_window.after(500, refresh_data)
 root_window.mainloop()
